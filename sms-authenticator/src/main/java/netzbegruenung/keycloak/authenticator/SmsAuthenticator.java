@@ -56,6 +56,7 @@ public class SmsAuthenticator implements Authenticator, CredentialValidator<SmsA
 
 	private static final Logger logger = Logger.getLogger(SmsAuthenticator.class);
 	private static final String TPL_CODE = "login-sms.ftl";
+	private static final String Attribute_Key = "mobile_number";
 
 	@Override
 	public void authenticate(AuthenticationFlowContext context) {
@@ -64,14 +65,17 @@ public class SmsAuthenticator implements Authenticator, CredentialValidator<SmsA
 		UserModel user = context.getUser();
 		RealmModel realm = context.getRealm();
 
-		Optional<CredentialModel> model = context.getUser().credentialManager().getStoredCredentialsByTypeStream(SmsAuthCredentialModel.TYPE).findFirst();
+//		Optional<CredentialModel> model = context.getUser().credentialManager().getStoredCredentialsByTypeStream(SmsAuthCredentialModel.TYPE).findFirst();
 		String mobileNumber;
-		try {
-			mobileNumber = JsonSerialization.readValue(model.orElseThrow().getCredentialData(), SmsAuthCredentialData.class).getMobileNumber();
-		} catch (IOException e1) {
-			logger.warn(e1.getMessage(), e1);
-			return;
-		}
+
+//		try {
+//			mobileNumber = JsonSerialization.readValue(model.orElseThrow().getCredentialData(), SmsAuthCredentialData.class).getMobileNumber();
+//		} catch (IOException e1) {
+//			logger.warn(e1.getMessage(), e1);
+//			return;
+//		}
+
+		mobileNumber = context.getUser().getFirstAttribute(Attribute_Key);
 
 		int length = Integer.parseInt(config.getConfig().get("length"));
 		int ttl = Integer.parseInt(config.getConfig().get("ttl"));
